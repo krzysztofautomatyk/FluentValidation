@@ -36,6 +36,10 @@ namespace DashboardUI
       person.AccountBalance = accountBalance;
       person.DateOfBirth = dateOfBirthPicker.Value;
 
+      // Validate my data
+
+
+
       // Insert into the database
 
       MessageBox.Show("Operation Complete");
