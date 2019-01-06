@@ -1,14 +1,17 @@
-﻿using ModelLibrary;
+﻿using DashboardUI.Validators;
+using FluentValidation.Results;
+using ModelLibrary;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+ 
 namespace DashboardUI
 {
   public partial class Dashboard : Form
@@ -18,6 +21,7 @@ namespace DashboardUI
     public Dashboard()
     {
       InitializeComponent();
+      errorListBox.DataSource = errors;
     }
 
     private void createButton_Click(object sender, EventArgs e)
@@ -30,19 +34,28 @@ namespace DashboardUI
         return;
       }
 
-      PersonModel person = new PersonModel();
-      person.FirstName = firstNameText.Text;
-      person.LastName = lastNameText.Text;
-      person.AccountBalance = accountBalance;
-      person.DateOfBirth = dateOfBirthPicker.Value;
+    PersonModel person = new PersonModel();
+    person.FirstName = firstNameText.Text;
+    person.LastName = lastNameText.Text;
+    person.AccountBalance = accountBalance;
+    person.DateOfBirth = dateOfBirthPicker.Value;
 
-      // Validate my data
+    // Validate my data
+    PersonValidator validator = new PersonValidator();
+    FluentValidation.Results.ValidationResult results = validator.Validate(person);
 
+    if (results.IsValid ==false)
+    {
+        foreach (ValidationFailure failure in results.Errors )
+        {
+            //errors.Add($"{ failure.PropertyName }:{failure.ErrorMessage}");
+            errors.Add($"{failure.ErrorMessage}");
+        }
+    }
 
+    // Insert into the database
 
-      // Insert into the database
-
-      MessageBox.Show("Operation Complete");
+    MessageBox.Show("Operation Complete");
     }
   }
 }
