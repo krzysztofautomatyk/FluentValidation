@@ -21,6 +21,31 @@ namespace DashboardUI.Validators
                 .NotEmpty().WithMessage("Nic nie wpisałeś w polu  {PropertyName} ") // {PropertyName} wyświelta nazwę pola
                 .Length(2, 50).WithMessage("Proszę wpisać prawidłowe imię ({TotalLength}) ")  // {TotalLength} => wyświetli w (ilość znaków) np. (32)
                 .Must(BeValidName).WithMessage("Imię zawiera niedozowlone znaki proszę użyj liter");
+
+            RuleFor(p => p.LastName)
+            .Cascade(CascadeMode.StopOnFirstFailure)
+            .NotEmpty().WithMessage("Nic nie wpisałeś w polu  {PropertyName} ") // {PropertyName} wyświelta nazwę pola
+            .Length(2, 50).WithMessage("Proszę wpisać prawidłowe imię ({TotalLength}) ")  // {TotalLength} => wyświetli w (ilość znaków) np. (32)
+            .Must(BeValidName).WithMessage("Imię zawiera niedozowlone znaki proszę użyj liter");
+
+            // Multi jęszykowy -> WithLocalizedMessage
+
+            RuleFor(p => p.DateOfBirth)
+                .Must(BeValidAge).WithMessage("Nieprawidłowa data ");
+
+        }
+
+        protected bool BeValidAge(DateTime date)
+        {
+            int currentYear = DateTime.Now.Year;
+            int dateOfBirth = date.Year;
+
+            if (dateOfBirth <= currentYear && dateOfBirth > (currentYear - 120))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         protected bool BeValidName(string name)
